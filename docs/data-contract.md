@@ -1,0 +1,7 @@
+# 已解码Kafka记录范围
+
+topic_uuid与partition、leader_epoch一起冻结，分区区间为start<=offset<lso。Fetch保证完整批结构，数据行原offset位于batch起止内，空洞合法；next_fetch_offset是适配器已扫描到的排他位置，不能由记录数推算。返回跨LSO批时只考虑LSO之前，空无进展响应可以重试至请求预算，不能宣布完成。所有控制标记也占offset。
+
+aborted_transactions会在覆盖中止段的请求中重复出现，按(producer_id,first_offset)识别同一项；中止区间包含first_offset到相应ABORT之前的数据。起点在事务中间也给first_offset。一个producer的下一事务在控制标记后开始，ABORT不影响后续已提交数据。source输出的read_committed批仍携带中止记录，隔离选择由本地层完成。所有offset采用非负整数，事务producer_id为非负，非事务示例为-1。
+
+本次不推断事务跨分区一致性，业务value是合成字符串。冻结LSO后实际源LSO可增长，不扩大本轮；epoch变化须核对适配器提供的前缀保留证据，没有证据直接阻塞。

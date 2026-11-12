@@ -1,0 +1,130 @@
+{
+  "partitions": [
+    {
+      "topic_uuid": "topic-demo",
+      "partition": 0,
+      "leader_epoch": 4,
+      "log_start": 0,
+      "start": 20,
+      "lso": 10,
+      "high_watermark": 12
+    }
+  ],
+  "steps": [
+    {
+      "operation": "fetch",
+      "arguments": {
+        "partition": 0,
+        "offset": 0,
+        "isolation": "read_committed",
+        "epoch": 4
+      },
+      "response": {
+        "leader_epoch": 4,
+        "log_start": 0,
+        "lso": 10,
+        "aborted_transactions": [
+          {
+            "producer_id": 7,
+            "first_offset": 0
+          }
+        ],
+        "batches": [
+          {
+            "base_offset": 0,
+            "last_offset": 3,
+            "producer_id": 7,
+            "transactional": true,
+            "records": [
+              {
+                "offset": 0,
+                "value": "void-a"
+              },
+              {
+                "offset": 3,
+                "value": "void-b"
+              }
+            ],
+            "control": null
+          }
+        ],
+        "next_fetch_offset": 4
+      }
+    },
+    {
+      "operation": "fetch",
+      "arguments": {
+        "partition": 0,
+        "offset": 4,
+        "isolation": "read_committed",
+        "epoch": 4
+      },
+      "response": {
+        "leader_epoch": 4,
+        "log_start": 0,
+        "lso": 10,
+        "aborted_transactions": [
+          {
+            "producer_id": 7,
+            "first_offset": 0
+          }
+        ],
+        "batches": [
+          {
+            "base_offset": 4,
+            "last_offset": 4,
+            "producer_id": 7,
+            "transactional": true,
+            "records": [],
+            "control": "ABORT"
+          },
+          {
+            "base_offset": 5,
+            "last_offset": 7,
+            "producer_id": 7,
+            "transactional": true,
+            "records": [
+              {
+                "offset": 5,
+                "value": "keep-a"
+              },
+              {
+                "offset": 7,
+                "value": "keep-b"
+              }
+            ],
+            "control": null
+          },
+          {
+            "base_offset": 8,
+            "last_offset": 8,
+            "producer_id": 7,
+            "transactional": true,
+            "records": [],
+            "control": "COMMIT"
+          },
+          {
+            "base_offset": 9,
+            "last_offset": 11,
+            "producer_id": -1,
+            "transactional": false,
+            "records": [
+              {
+                "offset": 9,
+                "value": "plain"
+              },
+              {
+                "offset": 11,
+                "value": "beyond"
+              }
+            ],
+            "control": null
+          }
+        ],
+        "next_fetch_offset": 10
+      }
+    }
+  ],
+  "max_batch_records": 1000,
+  "source_id": "fulfilment-demo"
+}
